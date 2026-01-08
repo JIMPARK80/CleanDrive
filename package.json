@@ -1,0 +1,12 @@
+{
+  "name": "cleandrive",
+  "version": "1.0.0",
+  "description": "C 드라이브 정리 도구 / C Drive Cleanup Tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
