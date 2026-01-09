@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
+
 <body class="dark-theme">
     <div class="app-container">
         <header>
@@ -62,6 +64,14 @@
                     <a href="/CleanDrive.zip" class="secondary-button" id="btnDownload">
                         <span class="btn-icon">📦</span> Download for Windows
                     </a>
+                    <div
+                        style="margin-top: 1rem; padding: 0.75rem; background: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 0.85rem; color: #ffc107;">
+                            ⚠️ <strong>Windows may show a security warning</strong> - this is normal for unsigned
+                            software.
+                            Click "More info" → "Run anyway" to proceed safely.
+                        </p>
+                    </div>
                 </div>
             </section>
         </main>
@@ -72,4 +82,5 @@
     </div>
     <script src="app.js"></script>
 </body>
+
 </html>

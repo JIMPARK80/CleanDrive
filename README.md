@@ -2,6 +2,11 @@
 
 C 드라이브 정리 도구 / C Drive Cleanup Tool
 
+> [!IMPORTANT]
+> **처음 설치하시나요?** Windows 보안 경고가 나타날 수 있습니다. [설치 가이드](INSTALLATION.md)를 참고하세요.
+> 
+> **First time installing?** You may see a Windows security warning. See the [Installation Guide](INSTALLATION.md).
+
 ## 사용 방법 / Usage
 
 ### 방법 1: 간단한 배치 파일 / Method 1: Simple Batch File
