@@ -1,4 +1,12 @@
+```json
 {
+    "version": 2,
+    "name": "cleandrive",
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "renderQueries": true,
+    "buildCommand": "echo 'Skipping build for web'",
+    "outputDirectory": ".",
     "rewrites": [
         {
             "source": "/api/cleanup",
