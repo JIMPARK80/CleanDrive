@@ -33,7 +33,7 @@ Require-Admin
 
 function Get-FreeGB {
     $drive = Get-PSDrive -Name C
-    [math]::Round($drive.Free/1GB,2)
+    [math]::Round($drive.Free / 1GB, 2)
 }
 
 $before = Get-FreeGB
@@ -43,7 +43,8 @@ Write-Host "Free space before: $before GB" -ForegroundColor Cyan
 try {
     Clear-RecycleBin -Force -ErrorAction SilentlyContinue
     Write-Host "[OK] Recycle Bin cleared." -ForegroundColor Green
-} catch { Write-Warning "Recycle Bin: $_" }
+}
+catch { Write-Warning "Recycle Bin: $_" }
 
 # 2) Temp folders
 $paths = @(
@@ -54,13 +55,11 @@ $paths = @(
 
 if ($Deep) {
     # Add more caches when Deep is enabled
-    $users = Get-ChildItem "C:\Users" -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -notin @('All Users','Default','Default User','Public') }
+    $users = Get-ChildItem "C:\Users" -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -notin @('All Users', 'Default', 'Default User', 'Public') }
     foreach ($u in $users) {
-        $paths += @(
-            Join-Path $u.FullName "AppData\Local\Temp",
-            Join-Path $u.FullName "AppData\Local\Packages",
-            Join-Path $u.FullName "AppData\Local\CrashDumps"
-        )
+        $paths += Join-Path $u.FullName "AppData\Local\Temp"
+        $paths += Join-Path $u.FullName "AppData\Local\Packages"
+        $paths += Join-Path $u.FullName "AppData\Local\CrashDumps"
     }
 }
 
@@ -69,7 +68,8 @@ foreach ($p in $paths) {
         try {
             Get-ChildItem -Path $p -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
             Write-Host "[OK] Cleared: $p" -ForegroundColor Green
-        } catch { Write-Warning "Failed to clear $p : $_" }
+        }
+        catch { Write-Warning "Failed to clear $p : $_" }
     }
 }
 
@@ -82,7 +82,8 @@ try {
         Get-ChildItem "$env:SystemRoot\SoftwareDistribution\Download" -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
         Write-Host "[OK] Windows Update Download cache cleared." -ForegroundColor Green
     }
-} catch { Write-Warning "Update cache reset: $_" } finally {
+}
+catch { Write-Warning "Update cache reset: $_" } finally {
     Start-Service bits -ErrorAction SilentlyContinue | Out-Null
     Start-Service wuauserv -ErrorAction SilentlyContinue | Out-Null
 }
@@ -93,22 +94,25 @@ if (Test-Path $doPath) {
     try {
         Get-ChildItem $doPath -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
         Write-Host "[OK] Delivery Optimization cache cleared." -ForegroundColor Green
-    } catch { Write-Warning "Delivery Optimization: $_" }
+    }
+    catch { Write-Warning "Delivery Optimization: $_" }
 }
 
 # 5) DISM component cleanup (can take time)
 try {
     Write-Host "Running DISM component cleanup..." -ForegroundColor Yellow
-    Start-Process -FilePath "dism.exe" -ArgumentList "/Online","/Cleanup-Image","/StartComponentCleanup","/ResetBase" -Wait -NoNewWindow
+    Start-Process -FilePath "dism.exe" -ArgumentList "/Online", "/Cleanup-Image", "/StartComponentCleanup", "/ResetBase" -Wait -NoNewWindow
     Write-Host "[OK] DISM cleanup completed." -ForegroundColor Green
-} catch { Write-Warning "DISM: $_" }
+}
+catch { Write-Warning "DISM: $_" }
 
 # 6) Optional: disable hibernation
 if ($DisableHibernate) {
     try {
         powercfg -h off | Out-Null
         Write-Host "[OK] Hibernation disabled (hiberfil.sys removed)." -ForegroundColor Green
-    } catch { Write-Warning "Hibernate: $_" }
+    }
+    catch { Write-Warning "Hibernate: $_" }
 }
 
 # 7) Optional: trim pagefile to 1–4 GB (reboot may be required)
@@ -117,7 +121,8 @@ if ($TrimPageFile) {
         $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
         Set-ItemProperty -Path $regPath -Name "PagingFiles" -Value "C:\pagefile.sys 1024 4096"
         Write-Host "[OK] Pagefile size set to 1–4 GB (reboot to apply)." -ForegroundColor Green
-    } catch { Write-Warning "Pagefile: $_" }
+    }
+    catch { Write-Warning "Pagefile: $_" }
 }
 
 # 8) Optional: delete ALL restore points (dangerous)
@@ -125,11 +130,12 @@ if ($DeleteRestorePoints) {
     try {
         vssadmin delete shadows /for=c: /all /quiet
         Write-Host "[OK] All restore points deleted." -ForegroundColor Green
-    } catch { Write-Warning "Restore points: $_" }
+    }
+    catch { Write-Warning "Restore points: $_" }
 }
 
 $after = Get-FreeGB
-$freed = [math]::Round(($after - $before),2)
+$freed = [math]::Round(($after - $before), 2)
 Write-Host "Free space after: $after GB (Freed: $freed GB)" -ForegroundColor Cyan
 
 # Stop-Transcript | Out-Null
