@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanDrive | Premium C: Drive Cleanup</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">✨</span>
+                <h1>CleanDrive</h1>
+            </div>
+            <nav>
+                <div class="status-badge" id="os-badge">Detecting OS...</div>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>Restore Your PC's <span class="gradient-text">Performance</span></h2>
+                    <p>Clean temporary files, optimize system caches, and reclaim your storage space.</p>
+                </div>
+            </section>
+
+            <section class="dashboard">
+                <div class="card cleanup-card">
+                    <h3>Cleanup Dashboard</h3>
+                    <div class="options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="chkDeep" checked>
+                            <span class="checkmark"></span>
+                            Deep Cleanup
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="chkHibernate">
+                            <span class="checkmark"></span>
+                            Disable Hibernate
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="chkPagefile">
+                            <span class="checkmark"></span>
+                            Trim Pagefile
+                        </label>
+                    </div>
+                    <button id="btnRun" class="primary-button">Run Cleanup</button>
+                    <div id="progress-container" class="hidden">
+                        <div class="progress-bar">
+                            <div id="progress-fill"></div>
+                        </div>
+                        <p id="status-text">Ready to optimize...</p>
+                    </div>
+                </div>
+
+                <div class="card download-card">
+                    <h3>Download Center</h3>
+                    <p>Get the standalone Windows executable for direct cleanup.</p>
+                    <a href="/download/CleanDrive.zip" class="secondary-button" id="btnDownload">
+                        <span class="btn-icon">📦</span> Download for Windows
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 CleanDrive Tool. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
