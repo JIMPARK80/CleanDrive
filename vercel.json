@@ -1,10 +1,18 @@
 {
-    "buildCommand": "echo 'No build needed'",
-    "outputDirectory": ".",
     "rewrites": [
         {
             "source": "/api/cleanup",
             "destination": "/api/cleanup.js"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/CleanDrive.zip",
+            "dest": "/public/CleanDrive.zip"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/public/$1"
         }
     ]
 }
