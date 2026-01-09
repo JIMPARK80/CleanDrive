@@ -16,6 +16,7 @@ CleanDrive를 처음 실행할 때 Windows가 보안 경고를 표시할 수 있
 - 소스 코드가 GitHub에 공개되어 있습니다
 - 악성 코드나 바이러스가 없습니다
 - Windows 임시 파일만 삭제합니다
+- **VirusTotal 검사 완료**: [68개 바이러스 백신 엔진 모두 안전 확인](https://www.virustotal.com/gui/file/037bb0c8e57691f201b9029d92866bd20f4ae37d70c84972d0408a5459436e1c)
 
 ---
 
@@ -66,6 +67,7 @@ Publisher: Unknown publisher
 
 ### Q: 정말 안전한가요?
 **A:** 네! 소스 코드를 GitHub에서 확인할 수 있습니다: https://github.com/JIMPARK80/CleanDrive
+또한 VirusTotal에서 68개 바이러스 백신 엔진으로 검사했으며 모두 안전하다고 확인되었습니다: [VirusTotal 검사 결과](https://www.virustotal.com/gui/file/037bb0c8e57691f201b9029d92866bd20f4ae37d70c84972d0408a5459436e1c)
 
 ### Q: 경고를 제거할 수 있나요?
 **A:** 프로그램을 여러 번 실행하면 Windows가 신뢰하기 시작할 수 있습니다. 또는 상용 인증서를 구매하면 경고가 사라집니다.

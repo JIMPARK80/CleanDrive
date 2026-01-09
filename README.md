@@ -2,10 +2,16 @@
 
 C 드라이브 정리 도구 / C Drive Cleanup Tool
 
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-0%2F68%20Clean-success)](https://www.virustotal.com/gui/file/037bb0c8e57691f201b9029d92866bd20f4ae37d70c84972d0408a5459436e1c)
+
 > [!IMPORTANT]
 > **처음 설치하시나요?** Windows 보안 경고가 나타날 수 있습니다. [설치 가이드](INSTALLATION.md)를 참고하세요.
 > 
 > **First time installing?** You may see a Windows security warning. See the [Installation Guide](INSTALLATION.md).
+
+> [!NOTE]
+> **안전성 확인 / Security Verified**: 이 프로그램은 VirusTotal에서 68개 바이러스 백신 엔진으로 검사되었으며, 모두 안전하다고 확인되었습니다.
+> This program has been scanned by 68 antivirus engines on VirusTotal and verified as clean.
 
 ## 사용 방법 / Usage
 
