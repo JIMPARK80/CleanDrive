@@ -26,9 +26,10 @@ function Require-Admin {
 
 Require-Admin
 
-$desktop = [Environment]::GetFolderPath('Desktop')
-$log = Join-Path $desktop ("CDrive_Cleanup_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + ".log")
-Start-Transcript -Path $log -Force | Out-Null
+# Log file generation disabled - no need for extra temp files
+# $desktop = [Environment]::GetFolderPath('Desktop')
+# $log = Join-Path $desktop ("CDrive_Cleanup_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + ".log")
+# Start-Transcript -Path $log -Force | Out-Null
 
 function Get-FreeGB {
     $drive = Get-PSDrive -Name C
@@ -131,5 +132,6 @@ $after = Get-FreeGB
 $freed = [math]::Round(($after - $before),2)
 Write-Host "Free space after: $after GB (Freed: $freed GB)" -ForegroundColor Cyan
 
-Stop-Transcript | Out-Null
-Write-Host "Log saved to: $log" -ForegroundColor Magenta
+# Stop-Transcript | Out-Null
+# Write-Host "Log saved to: $log" -ForegroundColor Magenta
+Write-Host "Cleanup completed successfully!" -ForegroundColor Green
