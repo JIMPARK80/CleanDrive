@@ -4,112 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CleanDrive | Windows 디스크 정리 도구</title>
+    <title>CleanDrive</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 
-<body class="dark-theme">
-    <div class="app-container">
-        <header>
-            <div class="logo">
-                <span class="logo-icon">✨</span>
-                <h1>CleanDrive</h1>
-            </div>
-        </header>
-
-        <main>
-            <section class="hero">
-                <div class="hero-content">
-                    <h2>Windows 디스크 공간을 <span class="gradient-text">빠르게 확보</span>하세요</h2>
-                    <p class="hero-subtitle">안전하고 강력한 C: 드라이브 정리 도구</p>
-                </div>
-            </section>
-
-            <section class="features-section">
-                <h3 class="section-title">🎯 주요 기능</h3>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">🧹</div>
-                        <h4>Deep Cleanup</h4>
-                        <p>임시 파일, 캐시, 휴지통을 완벽하게 정리</p>
-                        <span class="feature-badge">보통 1-10GB 확보</span>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💤</div>
-                        <h4>Disable Hibernate</h4>
-                        <p>최대 절전 모드 비활성화로 대용량 공간 확보</p>
-                        <span class="feature-badge">RAM 크기만큼 확보</span>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h4>Trim Pagefile</h4>
-                        <p>가상 메모리 파일 크기 최적화</p>
-                        <span class="feature-badge">고급 사용자용</span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="download-section">
-                <div class="download-card">
-                    <h3>💾 다운로드</h3>
-                    <p class="download-desc">Windows 전용 실행 파일 - 설치 불필요</p>
-
-                    <a href="/CleanDrive.zip" class="download-button">
-                        <span class="btn-icon">📦</span>
-                        <span class="btn-text">
-                            <strong>CleanDrive 다운로드</strong>
-                            <small>Windows 10/11 (64-bit)</small>
-                        </span>
-                    </a>
-
-                    <div class="security-info">
-                        <div class="info-row">
-                            <span class="info-icon">✅</span>
-                            <span>VirusTotal 검증 완료 (0/68 Clean)</span>
-                        </div>
-                        <div class="info-row warning">
-                            <span class="info-icon">⚠️</span>
-                            <span>Windows 보안 경고가 나타날 수 있습니다 - "자세히" → "실행" 클릭</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="how-to-use">
-                <h3 class="section-title">📖 사용 방법</h3>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h4>다운로드 및 압축 해제</h4>
-                            <p>CleanDrive.zip을 다운로드하고 압축을 풉니다</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h4>관리자 권한으로 실행</h4>
-                            <p>CDriveCleaner.exe를 우클릭 → "관리자 권한으로 실행"</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h4>옵션 선택 후 실행</h4>
-                            <p>원하는 정리 옵션을 선택하고 "Run Cleanup" 클릭</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            <p>© 2026 CleanDrive · <a href="https://github.com/JIMPARK80/CleanDrive" target="_blank">GitHub</a> · Open
-                Source</p>
-        </footer>
+<body>
+    <!-- Custom Title Bar -->
+    <div class="titlebar">
+        <div class="titlebar-drag">
+            <span class="app-icon">✨</span>
+            <span class="app-title">CleanDrive</span>
+        </div>
+        <div class="titlebar-controls">
+            <button class="titlebar-button" id="minimize-btn">─</button>
+            <button class="titlebar-button" id="maximize-btn">□</button>
+            <button class="titlebar-button close" id="close-btn">✕</button>
+        </div>
     </div>
-    <script src="app.js"></script>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="hero">
+                <h1>Windows 디스크 공간을<br><span class="gradient-text">빠르게 확보</span>하세요</h1>
+                <p class="subtitle">안전하고 강력한 C: 드라이브 정리 도구</p>
+            </div>
+
+            <div class="options-grid">
+                <div class="option-card" data-option="deep">
+                    <div class="option-icon">🧹</div>
+                    <h3>Deep Cleanup</h3>
+                    <p>임시 파일, 캐시, 휴지통 완전 정리</p>
+                    <span class="option-badge">1-10GB 확보</span>
+                    <div class="option-toggle">
+                        <input type="checkbox" id="opt-deep" checked>
+                        <label for="opt-deep"></label>
+                    </div>
+                </div>
+
+                <div class="option-card" data-option="hibernate">
+                    <div class="option-icon">💤</div>
+                    <h3>Disable Hibernate</h3>
+                    <p>최대 절전 모드 비활성화</p>
+                    <span class="option-badge">RAM 크기만큼</span>
+                    <div class="option-toggle">
+                        <input type="checkbox" id="opt-hibernate">
+                        <label for="opt-hibernate"></label>
+                    </div>
+                </div>
+
+                <div class="option-card" data-option="pagefile">
+                    <div class="option-icon">⚡</div>
+                    <h3>Trim Pagefile</h3>
+                    <p>가상 메모리 최적화</p>
+                    <span class="option-badge">고급 사용자용</span>
+                    <div class="option-toggle">
+                        <input type="checkbox" id="opt-pagefile">
+                        <label for="opt-pagefile"></label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" id="start-cleanup-btn">
+                <span class="btn-icon">🚀</span>
+                <span>정리 시작</span>
+            </button>
+        </div>
+
+        <!-- Progress Screen -->
+        <div id="progress-screen" class="screen">
+            <div class="progress-container">
+                <div class="circular-progress">
+                    <svg class="progress-ring" width="200" height="200">
+                        <circle class="progress-ring-circle-bg" cx="100" cy="100" r="90"></circle>
+                        <circle class="progress-ring-circle" cx="100" cy="100" r="90"></circle>
+                    </svg>
+                    <div class="progress-text">
+                        <div class="progress-percentage">0%</div>
+                        <div class="progress-label">정리 중...</div>
+                    </div>
+                </div>
+
+                <div class="status-text" id="status-text">준비 중...</div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💾</div>
+                        <div class="stat-value" id="space-freed">0 GB</div>
+                        <div class="stat-label">확보된 공간</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-value" id="elapsed-time">0:00</div>
+                        <div class="stat-label">경과 시간</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complete Screen -->
+        <div id="complete-screen" class="screen">
+            <div class="complete-container">
+                <div class="success-animation">
+                    <div class="checkmark">✓</div>
+                </div>
+                <h2>정리 완료!</h2>
+                <div class="complete-stats">
+                    <div class="complete-stat">
+                        <span class="complete-icon">💾</span>
+                        <span class="complete-value" id="final-space">0 GB</span>
+                        <span class="complete-label">확보된 공간</span>
+                    </div>
+                </div>
+                <button class="primary-button" id="cleanup-again-btn">
+                    <span>다시 정리하기</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
 </body>
 
 </html>

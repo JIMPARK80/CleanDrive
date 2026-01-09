@@ -1,12 +1,49 @@
 {
   "name": "cleandrive",
-  "version": "1.0.0",
-  "description": "C 드라이브 정리 도구 / C Drive Cleanup Tool",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Modern Windows disk cleanup tool built with Electron",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "cleanup",
+    "disk",
+    "windows",
+    "electron"
+  ],
+  "author": "CleanDrive",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.cleandrive.app",
+    "productName": "CleanDrive",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "style.css",
+      "CDrive_Cleanup.ps1",
+      "assets/**/*"
+    ]
+  }
 }
