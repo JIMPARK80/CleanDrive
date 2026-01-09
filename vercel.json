@@ -4,6 +4,7 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "renderQueries": true,
+    "installCommand": "echo 'Skipping npm install'",
     "buildCommand": "echo 'Skipping build for web'",
     "outputDirectory": ".",
     "rewrites": [
