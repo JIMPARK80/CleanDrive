@@ -30,40 +30,26 @@
             </section>
 
             <section class="dashboard">
-                <div class="card cleanup-card">
-                    <h3>Cleanup Dashboard</h3>
-                    <div class="options">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="chkDeep" checked>
-                            <span class="checkmark"></span>
-                            Deep Cleanup
-                        </label>
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="chkHibernate">
-                            <span class="checkmark"></span>
-                            Disable Hibernate
-                        </label>
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="chkPagefile">
-                            <span class="checkmark"></span>
-                            Trim Pagefile
-                        </label>
-                    </div>
-                    <button id="btnRun" class="primary-button">Run Cleanup</button>
-                    <div id="progress-container" class="hidden">
-                        <div class="progress-bar">
-                            <div id="progress-fill"></div>
-                        </div>
-                        <p id="status-text">Ready to optimize...</p>
-                    </div>
-                </div>
+                <div class="card download-card" style="max-width: 600px; margin: 0 auto;">
+                    <h3>Download CleanDrive</h3>
+                    <p>Get the standalone Windows executable to clean your C: drive and reclaim storage space.</p>
 
-                <div class="card download-card">
-                    <h3>Download Center</h3>
-                    <p>Get the standalone Windows executable for direct cleanup.</p>
-                    <a href="/CleanDrive.zip" class="secondary-button" id="btnDownload">
+                    <div
+                        style="margin: 1.5rem 0; padding: 1rem; background: rgba(124, 77, 255, 0.1); border-radius: 8px;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #7c4dff;">✨ Features</h4>
+                        <ul style="margin: 0; padding-left: 1.5rem; color: #b0b0b0;">
+                            <li>Deep cleanup of temporary files</li>
+                            <li>Disable hibernate to save disk space</li>
+                            <li>Optimize pagefile settings</li>
+                            <li>Easy-to-use GUI interface</li>
+                        </ul>
+                    </div>
+
+                    <a href="/CleanDrive.zip" class="primary-button" id="btnDownload"
+                        style="display: block; text-align: center; text-decoration: none;">
                         <span class="btn-icon">📦</span> Download for Windows
                     </a>
+
                     <div
                         style="margin-top: 1rem; padding: 0.75rem; background: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107; border-radius: 4px;">
                         <p style="margin: 0; font-size: 0.85rem; color: #ffc107;">
