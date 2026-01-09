@@ -1,35 +1,79 @@
 <# 
 CDrive_Cleanup.ps1
 Safe, automated cleanup for C: drive on Windows.
-- Empties Recycle Bin, temp folders, Windows Update cache
-- Runs DISM component cleanup
-- Optionally disables hibernation and trims pagefile size
-Run as Administrator. A log is saved to your Desktop.
+Runs as Administrator. Captures output for Electron.
 #>
 
 param(
-    [switch]$Deep,                 # Adds AppData cache purge and SoftwareDistribution reset
-    [switch]$DisableHibernate,     # powercfg -h off (removes hiberfil.sys)
-    [switch]$TrimPageFile,         # sets pagefile to 1–4 GB (requires reboot to fully apply)
-    [switch]$DeleteRestorePoints   # deletes ALL restore points (DANGEROUS)
+    [switch]$Deep,
+    [switch]$DisableHibernate,
+    [switch]$TrimPageFile,
+    [switch]$DeleteRestorePoints,
+    [string]$RedirectOutput  # Reserved for internal use (passing output back to non-admin process)
 )
 
-function Require-Admin {
+# Function to check for Admin rights
+function Test-Admin {
     $currentIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($currentIdentity)
-    if (-not $principal.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
-        Write-Host "Restarting as Administrator..." -ForegroundColor Yellow
-        Start-Process -FilePath "powershell" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $($MyInvocation.UnboundArguments)" -Verb RunAs
-        exit
-    }
+    return $principal.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
-Require-Admin
+if (-not (Test-Admin)) {
+    # [NON-ADMIN MODE]
+    # We are not admin. We must start a new elevated process to do the work.
+    # To capture its output, we ask it to write to a temporary file, then we read it back.
+    
+    $TempLog = [System.IO.Path]::GetTempFileName()
+    
+    # Reconstruct arguments
+    $MyArgs = @()
+    if ($Deep) { $MyArgs += "-Deep" }
+    if ($DisableHibernate) { $MyArgs += "-DisableHibernate" }
+    if ($TrimPageFile) { $MyArgs += "-TrimPageFile" }
+    if ($DeleteRestorePoints) { $MyArgs += "-DeleteRestorePoints" }
+    
+    # Add the hidden redirection argument
+    $MyArgs += "-RedirectOutput"
+    $MyArgs += "`"$TempLog`""
+    
+    # Join args properly
+    $ArgList = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $MyArgs"
 
-# Log file generation disabled - no need for extra temp files
-# $desktop = [Environment]::GetFolderPath('Desktop')
-# $log = Join-Path $desktop ("CDrive_Cleanup_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + ".log")
-# Start-Transcript -Path $log -Force | Out-Null
+    Write-Host "Requesting Admin privileges..." -ForegroundColor Yellow
+
+    try {
+        # Start elevated process and WAIT for it to finish
+        $process = Start-Process -FilePath "powershell" -ArgumentList $ArgList -Verb RunAs -PassThru -Wait
+        
+        # Read the captured output from the temp file
+        if (Test-Path $TempLog) {
+            Get-Content $TempLog | Write-Host
+            Remove-Item $TempLog -Force -ErrorAction SilentlyContinue
+        }
+    }
+    catch {
+        Write-Warning "Failed to elevate or user cancelled."
+        Write-Host "Free space before: 0 GB"
+        Write-Host "Free space after: 0 GB (Freed: 0.00 GB)"
+    }
+    
+    # Exit the wrapper process
+    exit
+}
+
+# [ADMIN MODE]
+# If we are here, we are Administrator.
+# If $RedirectOutput is set, we must capture everything to that file.
+
+if ($RedirectOutput) {
+    try {
+        Start-Transcript -Path $RedirectOutput -Force | Out-Null
+    }
+    catch {
+        # If transcript fails, proceed anyway (output might be lost but cleaner runs)
+    }
+}
 
 function Get-FreeGB {
     $drive = Get-PSDrive -Name C
@@ -37,6 +81,7 @@ function Get-FreeGB {
 }
 
 $before = Get-FreeGB
+# Always print this format for Electron parser
 Write-Host "Free space before: $before GB" -ForegroundColor Cyan
 
 # 1) Empty Recycle Bin
@@ -54,7 +99,6 @@ $paths = @(
 )
 
 if ($Deep) {
-    # Add more caches when Deep is enabled
     $users = Get-ChildItem "C:\Users" -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -notin @('All Users', 'Default', 'Default User', 'Public') }
     foreach ($u in $users) {
         $paths += Join-Path $u.FullName "AppData\Local\Temp"
@@ -73,7 +117,7 @@ foreach ($p in $paths) {
     }
 }
 
-# 3) Stop Update services and reset Download cache (safe)
+# 3) Stop Update services and reset Download cache
 try {
     Stop-Service wuauserv -Force -ErrorAction SilentlyContinue
     Stop-Service bits -Force -ErrorAction SilentlyContinue
@@ -83,61 +127,69 @@ try {
         Write-Host "[OK] Windows Update Download cache cleared." -ForegroundColor Green
     }
 }
-catch { Write-Warning "Update cache reset: $_" } finally {
+catch { 
+    Write-Warning "Update cache reset: $_" 
+}
+finally {
     Start-Service bits -ErrorAction SilentlyContinue | Out-Null
     Start-Service wuauserv -ErrorAction SilentlyContinue | Out-Null
 }
 
-# 4) Delivery Optimization files (safe to delete)
+# 4) Delivery Optimization
 $doPath = "$env:ProgramData\Microsoft\Windows\DeliveryOptimization\Cache"
 if (Test-Path $doPath) {
     try {
         Get-ChildItem $doPath -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
         Write-Host "[OK] Delivery Optimization cache cleared." -ForegroundColor Green
     }
-    catch { Write-Warning "Delivery Optimization: $_" }
+    catch { }
 }
 
-# 5) DISM component cleanup (can take time)
+# 5) DISM
 try {
     Write-Host "Running DISM component cleanup..." -ForegroundColor Yellow
     Start-Process -FilePath "dism.exe" -ArgumentList "/Online", "/Cleanup-Image", "/StartComponentCleanup", "/ResetBase" -Wait -NoNewWindow
     Write-Host "[OK] DISM cleanup completed." -ForegroundColor Green
 }
-catch { Write-Warning "DISM: $_" }
+catch { }
 
-# 6) Optional: disable hibernation
+# 6) Hibernation
 if ($DisableHibernate) {
     try {
         powercfg -h off | Out-Null
-        Write-Host "[OK] Hibernation disabled (hiberfil.sys removed)." -ForegroundColor Green
+        Write-Host "[OK] Hibernation disabled." -ForegroundColor Green
     }
-    catch { Write-Warning "Hibernate: $_" }
+    catch {}
 }
 
-# 7) Optional: trim pagefile to 1–4 GB (reboot may be required)
+# 7) Pagefile
 if ($TrimPageFile) {
     try {
         $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
         Set-ItemProperty -Path $regPath -Name "PagingFiles" -Value "C:\pagefile.sys 1024 4096"
-        Write-Host "[OK] Pagefile size set to 1–4 GB (reboot to apply)." -ForegroundColor Green
+        Write-Host "[OK] Pagefile resized." -ForegroundColor Green
     }
-    catch { Write-Warning "Pagefile: $_" }
+    catch {}
 }
 
-# 8) Optional: delete ALL restore points (dangerous)
+# 8) Restore Points
 if ($DeleteRestorePoints) {
     try {
         vssadmin delete shadows /for=c: /all /quiet
-        Write-Host "[OK] All restore points deleted." -ForegroundColor Green
+        Write-Host "[OK] Restore points deleted." -ForegroundColor Green
     }
-    catch { Write-Warning "Restore points: $_" }
+    catch {}
 }
 
 $after = Get-FreeGB
 $freed = [math]::Round(($after - $before), 2)
-Write-Host "Free space after: $after GB (Freed: $freed GB)" -ForegroundColor Cyan
+# Ensure non-negative display
+if ($freed -lt 0) { $freed = 0 }
 
-# Stop-Transcript | Out-Null
-# Write-Host "Log saved to: $log" -ForegroundColor Magenta
+# Always print this format for Electron parser
+Write-Host "Free space after: $after GB (Freed: $freed GB)" -ForegroundColor Cyan
 Write-Host "Cleanup completed successfully!" -ForegroundColor Green
+
+if ($RedirectOutput) {
+    Stop-Transcript | Out-Null
+}

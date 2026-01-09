@@ -43,8 +43,10 @@
       "renderer.js",
       "index.html",
       "style.css",
-      "CDrive_Cleanup.ps1",
       "assets/**/*"
+    ],
+    "extraResources": [
+      "CDrive_Cleanup.ps1"
     ]
   }
 }

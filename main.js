@@ -60,6 +60,7 @@ ipcMain.on('window-close', () => {
 // Cleanup execution
 ipcMain.on('run-cleanup', (event, options) => {
     const scriptPath = path.join(__dirname, 'CDrive_Cleanup.ps1');
+
     const args = ['-ExecutionPolicy', 'Bypass', '-File', scriptPath];
 
     if (options.deep) args.push('-Deep');
@@ -77,40 +78,32 @@ ipcMain.on('run-cleanup', (event, options) => {
         const text = data.toString();
         output += text;
 
-        // Parse output for progress
+        // Parse progress updates
         if (text.includes('[OK]')) {
             const match = text.match(/\[OK\]\s+(.+)/);
             if (match) {
                 event.reply('cleanup-progress', {
                     status: match[1].trim(),
-                    progress: calculateProgress(output)
+                    progress: calculateProgress(output) // Use full output for better progress calc
                 });
             }
         }
 
-        // Parse space freed
-        if (text.includes('Freed:')) {
-            const match = text.match(/Freed:\s+([\d.]+)\s+GB/);
-            if (match) {
-                freedSpace = parseFloat(match[1]);
-            }
-        }
-
-        // Send status updates
+        // Status updates based on keywords in the stream
         if (text.includes('Free space before:')) {
-            event.reply('cleanup-progress', { status: '시작 중...', progress: 0 });
+            event.reply('cleanup-progress', { status: '시작 중...', progress: 5 });
         }
         if (text.includes('Recycle Bin')) {
-            event.reply('cleanup-progress', { status: '휴지통 비우는 중...', progress: 10 });
+            event.reply('cleanup-progress', { status: '휴지통 비우는 중...', progress: 15 });
         }
-        if (text.includes('Temp')) {
-            event.reply('cleanup-progress', { status: '임시 파일 정리 중...', progress: 30 });
+        if (text.includes('Temp') || text.includes('Cleared:')) {
+            event.reply('cleanup-progress', { status: '임시 파일 정리 중...', progress: 40 });
         }
         if (text.includes('Update')) {
-            event.reply('cleanup-progress', { status: 'Windows Update 캐시 정리 중...', progress: 60 });
+            event.reply('cleanup-progress', { status: 'Windows Update 캐시 정리 중...', progress: 65 });
         }
         if (text.includes('DISM')) {
-            event.reply('cleanup-progress', { status: 'DISM 정리 실행 중...', progress: 80 });
+            event.reply('cleanup-progress', { status: '시스템 최적화 (DISM) 실행 중...', progress: 85 });
         }
     });
 
@@ -119,6 +112,13 @@ ipcMain.on('run-cleanup', (event, options) => {
     });
 
     ps.on('close', (code) => {
+        // Final parse of the complete output to find Freed space
+        // This is robust against stream chunking
+        const freedMatch = output.match(/Freed:\s+([\d.]+)\s+GB/);
+        if (freedMatch) {
+            freedSpace = parseFloat(freedMatch[1]);
+        }
+
         event.reply('cleanup-complete', {
             success: code === 0,
             freedSpace: freedSpace,
