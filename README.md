@@ -89,18 +89,22 @@ CleanDrive/
 ├── Build.bat                   # Build script (batch)
 ├── Build.ps1                   # Build script (PowerShell)
 ├── CreateDistribution.bat      # Create distribution package
-└── README.md                   # This file
+└── README.md                   ## 🛠️ 개발 및 빌드
+
+```bash
+# 의존성 설치
+npm install
+
+# 개발 모드 실행
+npm start
+
+# Windows 인스톨러 빌드 (CleanDrive Setup.exe)
+npm run build:app
+
+# Portable 버전 (ZIP) 생성
+# npx electron-packager . CleanDrive --platform=win32 --arch=x64 --out=dist
 ```
-
-## 요구사항 / Requirements
-
-### 개발자용 / For Developers
-- Windows 10/11
-- .NET 6.0 SDK (빌드용 / for building)
-- PowerShell 5.1 or higher
-
 ### 최종 사용자용 / For End Users
 - Windows 10/11 (64-bit)
 - PowerShell 5.1 or higher
-- **.NET 런타임 불필요** / **No .NET runtime needed** (self-contained 빌드 사용 시 / when using self-contained build)
 
