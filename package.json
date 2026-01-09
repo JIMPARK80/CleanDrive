@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
+    "build": "echo 'Web deploy - skipping app build'",
+    "build:app": "electron-builder",
     "build:win": "electron-builder --win"
   },
   "keywords": [
