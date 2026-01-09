@@ -1,4 +1,27 @@
+# Node modules
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+*.zip
+
+# IDE
+.vscode/
+.vs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# C# build artifacts (legacy)
 bin/
 obj/
-CDriveCleaner_Distribution/
+*.csproj
+*.sln
 *.user
+*.suo
+
+# Electron
+*.log
+npm-debug.log*
